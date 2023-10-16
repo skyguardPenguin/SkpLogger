@@ -134,7 +134,7 @@ public class SkpWritter:ISkpWritter
             header += $"\n\t\t|                   Module Logs                   |";
 
         header += "\n"+lineOfEquals + "\n\nService information: ";
-        Properties.Add("Logger version", "1.0");
+        Properties.TryAdd("Logger version", "1.0");
         Properties.Keys.ToList().ForEach(key =>
         {
             header += $"\n[{key}] -> {Properties[key]} ";
@@ -143,7 +143,6 @@ public class SkpWritter:ISkpWritter
         header += "\n\n";
 
         return header;
-        
     }
 
     public void Initialize()
@@ -431,15 +430,21 @@ public class SkpWritter:ISkpWritter
     
     private void SaveLog(string text)
     {        
-        if (!_readyToSave)
-        {
-            WriteLogError("Could not save, SkpWritter was not be initialized. ", "SaveCustomLog()");
-            return;
-        }
+        // if (!_readyToSave)
+        // {
+        //     WriteLogError("Could not save, SkpWritter was not be initialized. ", "SaveCustomLog()");
+        //     return;
+        // }
  
         try
         {
             string file = GetActualLogFile();
+            if (!_readyToSave)
+            {
+                WriteLogError("Could not save, SkpWritter was not be initialized. ", "SaveCustomLog()");
+                return;
+            }
+
             if (string.IsNullOrEmpty(file)) throw new Exception("Error getting the full file path");
             
             _startLineParams.SetDateNow(DateTime.Now.ToString(_dateFormat));
